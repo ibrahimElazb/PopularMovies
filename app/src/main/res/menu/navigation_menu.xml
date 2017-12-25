@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group>
+        <item android:title="Movies" android:icon="@drawable/ic_movie" app:showAsAction="always">
+            <menu>
+        <item
+            android:id="@+id/now_playing_movies_menu_item"
+            android:title="@string/now_playing_movies" />
+        <item
+            android:id="@+id/popular_movies_menu_item"
+            android:title="@string/popular_movies" />
+        <item
+            android:id="@+id/top_rated_movies_menu_item"
+            android:title="@string/toprated_movies" />
+        <item
+            android:id="@+id/upcoming_movies_menu_item"
+            android:title="@string/upcoming_movies" />
+            </menu>
+        </item>
+    </group>
+
+    <group>
+        <item android:title="TV Show" >
+            <menu>
+        <item
+            android:id="@+id/airing_today_tv_menu_item"
+            android:title="@string/airing_today_tv" />
+        <item
+            android:id="@+id/on_the_air_tv_menu_item"
+            android:title="@string/on_the_air_tv" />
+        <item
+            android:id="@+id/popular_tv_menu_item"
+            android:title="@string/popular_tv" />
+        <item
+            android:id="@+id/top_rated_tv_menu_item"
+            android:title="@string/toprated_tv" />
+            </menu>
+        </item>
+    </group>
+    <group>
+        <item android:title="Actors">
+            <menu>
+        <item android:title="@string/popular_actors" android:id="@+id/popular_actors_menu_id"/>
+            </menu>
+        </item>
+    </group>
+</menu>

@@ -6,8 +6,7 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Result implements Serializable
-{
+public class Result implements Serializable {
 
     @SerializedName("vote_count")
     @Expose
@@ -20,7 +19,7 @@ public class Result implements Serializable
     public boolean video;
     @SerializedName("vote_average")
     @Expose
-    public int voteAverage;
+    public double voteAverage;
     @SerializedName("title")
     @Expose
     public String title;
@@ -51,6 +50,7 @@ public class Result implements Serializable
     @SerializedName("release_date")
     @Expose
     public String releaseDate;
+    public String errorMessage;
     private final static long serialVersionUID = 7756300412282020086L;
 
 }
