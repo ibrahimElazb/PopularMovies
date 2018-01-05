@@ -7,10 +7,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class Result implements Serializable
 {
-
-    @SerializedName("popularity")
-    @Expose
-    public double popularity;
     @SerializedName("id")
     @Expose
     public int id;
@@ -20,12 +16,6 @@ public class Result implements Serializable
     @SerializedName("name")
     @Expose
     public String name;
-    @SerializedName("known_for")
-    @Expose
-    public List<KnownFor> knownFor = null;
-    @SerializedName("adult")
-    @Expose
-    public boolean adult;
     private final static long serialVersionUID = -1155117822792173117L;
 
 }
