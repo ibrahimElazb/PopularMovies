@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.learn2develope.popularmovies">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -18,7 +19,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailsActivity"></activity>
+        <activity android:name=".MoviesDetailedActivity" />
+        <activity android:name=".TvShowDetailedActivity" />
+        <activity android:name=".ActorDetailedActivity" />
+        <activity android:name=".FavoritesActivity" />
+        <activity android:name=".SearchActivity" />
+        <!-- This is required for immediate syncs -->
+        <service
+            android:name=".sync.MainDataSyncService"
+            android:exported="false" />
+        <service
+            android:name=".sync.MainFirebaseJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".sync.NetworkChangeReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".SearchActivity"></activity>
     </application>
 
 </manifest>

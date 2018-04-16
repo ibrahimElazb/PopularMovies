@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:background="#90CAF9">
 <ScrollView android:id="@+id/sv_main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -11,7 +12,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.learn2develope.popularmovies.MovieDetailedFragment">
+        tools:context="com.learn2develope.popularmovies.MovieInfoDetailsFragment">
 
         <FrameLayout
             android:id="@+id/fl_image_container"
@@ -29,8 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/ic_navigation_view_header"
-            android:background="#90CAF9"
-             />
+            android:background="#999999"
+            android:paddingBottom="20dp"/>
             <ProgressBar
                 android:id="@+id/image_loading_progress_bar"
                 android:layout_width="50dp"
@@ -42,14 +43,11 @@
             android:id="@+id/tb_favorite"
             android:layout_width="51dp"
             android:layout_height="41dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginVertical="230dp"
             android:background="@drawable/favorite_button_selector"
             android:textOff=""
             android:textOn=""
-            app:layout_constraintEnd_toEndOf="@+id/fl_image_container"
             app:layout_constraintRight_toRightOf="@id/fl_image_container"
-            app:layout_constraintTop_toTopOf="@id/fl_image_container" />
+            app:layout_constraintBottom_toBottomOf="@id/fl_image_container" />
 
         <TextView
             android:id="@+id/tv_movie_title"
@@ -66,8 +64,8 @@
             android:id="@+id/tv_genres"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
+            android:padding="10dp"
             app:layout_constraintStart_toStartOf="@+id/tv_movie_title"
             app:layout_constraintTop_toBottomOf="@id/tv_movie_title"
             tools:text="Action , Adventure , Fantasy , Science Fiction" />
@@ -119,6 +117,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_overview_label"
             app:layout_constraintTop_toBottomOf="@+id/ratingBar"
+            android:background="@drawable/details_overview_background"
             tools:text="Rey develops her newly discovered abilities with the guidance of Luke Skywalker" />
 
 
@@ -182,16 +181,6 @@
             app:layout_constraintStart_toEndOf="@+id/btn_homepage"
             app:layout_constraintTop_toTopOf="@+id/btn_homepage" />
 
-        <include
-            android:id="@+id/collection_details"
-            layout="@layout/movie_collection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_homepage"
-            android:visibility="gone"/>
-
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
         <include android:id="@+id/loading_indicator"
@@ -205,6 +194,7 @@
             android:id="@+id/tv_show_error"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:background="@drawable/details_overview_background"/>
     </FrameLayout>
 </layout>

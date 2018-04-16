@@ -22,17 +22,15 @@ import java.util.List;
 
 public class MovieReviewsAdapter extends RecyclerView.Adapter<MovieReviewsAdapter.MovieReviewsViewHolder> {
 
-    Context context;
     List<Result> reviewsList;
 
-    public MovieReviewsAdapter(Context context, List<Result> reviewsList) {
-        this.context = context;
+    public MovieReviewsAdapter(List<Result> reviewsList) {
         this.reviewsList = reviewsList;
     }
 
     @Override
     public MovieReviewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        TextView movieReviewTextView=new TextView(context);
+        TextView movieReviewTextView=new TextView(parent.getContext());
         return new MovieReviewsViewHolder(movieReviewTextView);
     }
 

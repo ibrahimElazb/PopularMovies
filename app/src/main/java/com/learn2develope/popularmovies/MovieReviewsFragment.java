@@ -4,7 +4,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +13,7 @@ import android.view.ViewGroup;
 import com.learn2develope.popularmovies.adapters.MovieReviewsAdapter;
 import com.learn2develope.popularmovies.databinding.FragmentMovieReviewsBinding;
 import com.learn2develope.popularmovies.model.movies.movieReviews.Result;
-import com.learn2develope.popularmovies.retrofitUtils.RetrofitNetworkUtils;
+import com.learn2develope.popularmovies.NetworkUtils.RetrofitNetworkUtils;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class MovieReviewsFragment extends Fragment implements RetrofitNetworkUti
     public static MovieReviewsFragment newInstance(int movieId) {
         MovieReviewsFragment fragment = new MovieReviewsFragment();
         Bundle args = new Bundle();
-        args.putInt(DetailsActivity.ARG_MOVIE_ID, movieId);
+        args.putInt(MoviesDetailedActivity.ARG_MOVIE_ID, movieId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -36,7 +35,7 @@ public class MovieReviewsFragment extends Fragment implements RetrofitNetworkUti
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mMovieId = getArguments().getInt(DetailsActivity.ARG_MOVIE_ID);
+            mMovieId = getArguments().getInt(MoviesDetailedActivity.ARG_MOVIE_ID);
         }
     }
 
@@ -69,7 +68,7 @@ public class MovieReviewsFragment extends Fragment implements RetrofitNetworkUti
             List<Result> reviewsList=results;
             movieReviewsBinding.loadingIndicator.getRoot().setVisibility(View.INVISIBLE);
             movieReviewsBinding.rvMovieReview.setVisibility(View.VISIBLE);
-            MovieReviewsAdapter reviewsAdapter=new MovieReviewsAdapter(getActivity(),reviewsList);
+            MovieReviewsAdapter reviewsAdapter=new MovieReviewsAdapter(reviewsList);
             movieReviewsBinding.rvMovieReview.setAdapter(reviewsAdapter);
         }else {
             movieReviewsBinding.tvShowError.setText("No Reviews fro this movie");

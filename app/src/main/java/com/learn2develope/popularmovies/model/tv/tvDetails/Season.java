@@ -23,6 +23,6 @@ public class Season implements Serializable
     @SerializedName("season_number")
     @Expose
     public int seasonNumber;
-    private final static long serialVersionUID = 2392601813137411048L;
+    private final static long serialVersionUID = -5133799427315039996L;
 
 }

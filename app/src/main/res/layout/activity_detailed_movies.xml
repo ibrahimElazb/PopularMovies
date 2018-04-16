@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+        <FrameLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/detailed_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/detailed_fragment_container"
+    android:id="@+id/tab_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.learn2develope.popularmovies.DetailsActivity">
+    android:visibility="invisible"
+    tools:context="com.learn2develope.popularmovies.MoviesDetailedActivity">
         <android.support.design.widget.TabLayout android:id="@+id/movie_details_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -16,9 +22,9 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/vp_movie_pages"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible"></android.support.v4.view.ViewPager>
+            android:layout_height="match_parent"></android.support.v4.view.ViewPager>
 
 
 </LinearLayout>
+        </FrameLayout>
 </layout>

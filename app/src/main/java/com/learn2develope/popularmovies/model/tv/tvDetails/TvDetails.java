@@ -12,6 +12,9 @@ public class TvDetails implements Serializable
     @SerializedName("backdrop_path")
     @Expose
     public String backdropPath;
+    @SerializedName("episode_run_time")
+    @Expose
+    public List<Integer> episodeRunTime = null;
     @SerializedName("first_air_date")
     @Expose
     public String firstAirDate;
@@ -24,12 +27,7 @@ public class TvDetails implements Serializable
     @SerializedName("id")
     @Expose
     public int id;
-    @SerializedName("languages")
-    @Expose
-    public List<String> languages = null;
-    @SerializedName("last_air_date")
-    @Expose
-    public String lastAirDate;
+
     @SerializedName("name")
     @Expose
     public String name;
@@ -39,9 +37,6 @@ public class TvDetails implements Serializable
     @SerializedName("number_of_seasons")
     @Expose
     public int numberOfSeasons;
-    @SerializedName("original_name")
-    @Expose
-    public String originalName;
     @SerializedName("overview")
     @Expose
     public String overview;
@@ -59,10 +54,10 @@ public class TvDetails implements Serializable
     public String type;
     @SerializedName("vote_average")
     @Expose
-    public double voteAverage;
+    public float voteAverage;
     @SerializedName("vote_count")
     @Expose
     public int voteCount;
-    private final static long serialVersionUID = 6490884493942742563L;
+    private final static long serialVersionUID = 4275714008599212627L;
 
 }

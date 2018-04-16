@@ -14,6 +14,6 @@ public class Genre implements Serializable
     @SerializedName("name")
     @Expose
     public String name;
-    private final static long serialVersionUID = 8176676699415425995L;
+    private final static long serialVersionUID = 3814397357444515838L;
 
 }

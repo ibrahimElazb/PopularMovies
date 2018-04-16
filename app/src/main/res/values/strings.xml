@@ -24,4 +24,10 @@
     <string name="btn_homepage_label">HomePage</string>
     <string name="btn_imdb_label">IMDB</string>
     <string name="show_videos_pop_up_menu_item">Show Videos</string>
+
+    <string-array name="search_type">
+        <item>movie</item>
+        <item>tv show</item>
+        <item>actor</item>
+    </string-array>
 </resources>

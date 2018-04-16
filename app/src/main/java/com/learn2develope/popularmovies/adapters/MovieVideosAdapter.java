@@ -10,13 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.learn2develope.popularmovies.R;
 import com.learn2develope.popularmovies.model.movies.movieVideos.Result;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -28,16 +25,14 @@ public class MovieVideosAdapter extends RecyclerView.Adapter<MovieVideosAdapter.
 
 
     List<Result> videoList;
-    Context context;
 
-    public MovieVideosAdapter(Context context, List<Result> videoList){
+    public MovieVideosAdapter(List<Result> videoList){
         this.videoList = videoList;
-        this.context=context;
     }
 
     @Override
     public MovieVideosAdapter.MovieVideosViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(context).inflate(R.layout.list_item_movie,parent,false);
+        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_movie,parent,false);
         return new MovieVideosAdapter.MovieVideosViewHolder(view);
     }
 
@@ -45,24 +40,19 @@ public class MovieVideosAdapter extends RecyclerView.Adapter<MovieVideosAdapter.
     public void onBindViewHolder(final MovieVideosAdapter.MovieVideosViewHolder holder, int position) {
         holder.TitleTextView.setText(videoList.get(position).name);
         String imageUrl="http://img.youtube.com/vi/"+ videoList.get(position).key+"/0.jpg";
-        Glide.with(context.getApplicationContext())
-                .load(imageUrl).
-                error(R.drawable.ic_no_image).
-                fitCenter().
-                listener(new RequestListener<String, GlideDrawable>() {
+        Picasso.with(holder.listItemView.getContext()).load(imageUrl)
+                .into(holder.ImageView, new Callback() {
                     @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    public void onSuccess() {
                         holder.imageLoadingProgressBar.setVisibility(View.INVISIBLE);
-                        return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    public void onError() {
                         holder.imageLoadingProgressBar.setVisibility(View.INVISIBLE);
-                        return false;
+                        holder.ImageView.setImageResource(R.drawable.ic_no_image);
                     }
-                }).
-                into(holder.ImageView);
+                });
     }
 
     @Override
@@ -75,9 +65,11 @@ public class MovieVideosAdapter extends RecyclerView.Adapter<MovieVideosAdapter.
         TextView TitleTextView;
         ImageView ImageView;
         ProgressBar imageLoadingProgressBar;
+        View listItemView;
 
         public MovieVideosViewHolder(View view) {
             super(view);
+            listItemView=view;
             TitleTextView = (TextView) view.findViewById(R.id.tv_cast_title);
             ImageView = (ImageView) view.findViewById(R.id.iv_movie_cast_image);
             imageLoadingProgressBar = (ProgressBar) view.findViewById(R.id.pb_image_loading);
@@ -86,7 +78,7 @@ public class MovieVideosAdapter extends RecyclerView.Adapter<MovieVideosAdapter.
                 public void onClick(View view) {
                     Intent intent=new Intent(Intent.ACTION_VIEW,
                             Uri.parse("http://www.youtube.com/watch?v=" + videoList.get(getAdapterPosition()).key));
-                    context.startActivity(intent);
+                    view.getContext().startActivity(intent);
                 }
             });
         }

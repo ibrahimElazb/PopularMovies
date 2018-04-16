@@ -10,13 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.learn2develope.popularmovies.adapters.MovieCastAdapter;
 import com.learn2develope.popularmovies.databinding.FragmentMovieCastBinding;
 import com.learn2develope.popularmovies.model.movies.movieCast.Cast;
-import com.learn2develope.popularmovies.model.movies.movieCast.MovieCast;
-import com.learn2develope.popularmovies.retrofitUtils.RetrofitNetworkUtils;
+import com.learn2develope.popularmovies.NetworkUtils.RetrofitNetworkUtils;
 
 import java.util.List;
 
@@ -30,7 +28,7 @@ public class MovieCastFragment extends Fragment implements RetrofitNetworkUtils.
     public static MovieCastFragment newInstance(int movie_id) {
         MovieCastFragment fragment = new MovieCastFragment();
         Bundle args = new Bundle();
-        args.putInt(DetailsActivity.ARG_MOVIE_ID, movie_id);
+        args.putInt(MoviesDetailedActivity.ARG_MOVIE_ID, movie_id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -39,7 +37,7 @@ public class MovieCastFragment extends Fragment implements RetrofitNetworkUtils.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mMovie_id=getArguments().getInt(DetailsActivity.ARG_MOVIE_ID);
+            mMovie_id=getArguments().getInt(MoviesDetailedActivity.ARG_MOVIE_ID);
         }
     }
 
@@ -58,7 +56,7 @@ public class MovieCastFragment extends Fragment implements RetrofitNetworkUtils.
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        new RetrofitNetworkUtils().getMovieCast(this,mMovie_id);
+         RetrofitNetworkUtils.getMovieCast(this,mMovie_id);
     }
 
     @Override
@@ -70,7 +68,7 @@ public class MovieCastFragment extends Fragment implements RetrofitNetworkUtils.
     @Override
     public void onLoadCompletedSuccessfully(List results) {
         List<Cast> castList=results;
-        MovieCastAdapter movieCastAdapter=new MovieCastAdapter(getActivity(),castList);
+        MovieCastAdapter movieCastAdapter=new MovieCastAdapter(castList);
         movieCastBinding.rvMovieCast.setAdapter(movieCastAdapter);
         movieCastBinding.rvMovieCast.setVisibility(View.VISIBLE);
         movieCastBinding.loadingIndicator.getRoot().setVisibility(View.INVISIBLE);

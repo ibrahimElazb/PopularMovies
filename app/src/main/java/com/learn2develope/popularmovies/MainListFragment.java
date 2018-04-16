@@ -12,8 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.learn2develope.popularmovies.adapters.MainListAdapter;
+import com.learn2develope.popularmovies.database.MovieDatabaseOperations;
 import com.learn2develope.popularmovies.databinding.FragmentMainListBinding;
-import com.learn2develope.popularmovies.retrofitUtils.RetrofitNetworkUtils;
+import com.learn2develope.popularmovies.NetworkUtils.NetworkConnectivity;
+import com.learn2develope.popularmovies.NetworkUtils.RetrofitNetworkUtils;
 
 import java.util.List;
 
@@ -21,25 +23,24 @@ import java.util.List;
  * Created by Ibrahim Elazb on 12/24/2017.
  */
 
-public class MainListFragment extends Fragment implements RetrofitNetworkUtils.onLoadingHandler{
+public class MainListFragment extends Fragment implements RetrofitNetworkUtils.onLoadingHandler {
 
     MainListAdapter moviesAdapter;
-   // static Context mContext;
-   FragmentMainListBinding fragmentListBinding;
+    // static Context mContext;
+    FragmentMainListBinding fragmentListBinding;
 
-     String category;
-     String subCategory;
-     int pageNumber;
+    String category;
+    String subCategory;
+    int pageNumber;
 
 
-    static MainListFragment newInstance(String category, String subCategory, int pageNumber) {
+    public static MainListFragment newInstance(String category, String subCategory, int pageNumber) {
 
         MainListFragment fragment = new MainListFragment();
-         Bundle bundle=new Bundle();
-        bundle.putString(RetrofitNetworkUtils.LIST_MAIN_CATEGORY,category);
+        Bundle bundle = new Bundle();
+        bundle.putString(RetrofitNetworkUtils.LIST_MAIN_CATEGORY, category);
         bundle.putString(RetrofitNetworkUtils.LIST_SUBCATEGORY, subCategory);
-        bundle.putInt(RetrofitNetworkUtils.PAGE_NUMBER,pageNumber);
-        Log.d(MainListFragment.class.getName(),bundle.toString());
+        bundle.putInt(RetrofitNetworkUtils.PAGE_NUMBER, pageNumber);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -49,7 +50,6 @@ public class MainListFragment extends Fragment implements RetrofitNetworkUtils.o
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         Bundle bundle = getArguments();
-        Log.d(MainListFragment.class.getName(),bundle.getInt(RetrofitNetworkUtils.PAGE_NUMBER)+"  oncreate");
         category = bundle.getString(RetrofitNetworkUtils.LIST_MAIN_CATEGORY);
         subCategory = bundle.getString(RetrofitNetworkUtils.LIST_SUBCATEGORY);
         pageNumber = bundle.getInt(RetrofitNetworkUtils.PAGE_NUMBER);
@@ -69,12 +69,21 @@ public class MainListFragment extends Fragment implements RetrofitNetworkUtils.o
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (category.equals(RetrofitNetworkUtils.MOVIES_CATEGORY)) {
-            new RetrofitNetworkUtils().getMoviesListInfo(this,subCategory,pageNumber);
-        } else if (category.equals(RetrofitNetworkUtils.TV_CATEGORY)) {
-            new RetrofitNetworkUtils().getTvListInfo(this,subCategory,pageNumber);
-        } else if (category.equals(RetrofitNetworkUtils.ACTORS_CATEGORY)) {
-            new RetrofitNetworkUtils().getActorsListInfo(this,subCategory,pageNumber);
+        if (NetworkConnectivity.isNetworkConnectivityAvailable(getActivity())) {
+            if (category.equals(RetrofitNetworkUtils.MOVIES_CATEGORY)) {
+                new RetrofitNetworkUtils().getMoviesListInfo(this, subCategory, pageNumber);
+            } else if (category.equals(RetrofitNetworkUtils.TV_CATEGORY)) {
+                new RetrofitNetworkUtils().getTvListInfo(this, subCategory, pageNumber);
+            } else if (category.equals(RetrofitNetworkUtils.ACTORS_CATEGORY)) {
+                new RetrofitNetworkUtils().getActorsListInfo(this, subCategory, pageNumber);
+            }
+
+        } else {
+            List results = MovieDatabaseOperations.retrieveData(getActivity().getApplicationContext(), category, subCategory);
+            moviesAdapter = new MainListAdapter((MainActivity)getActivity(), results, "offline");
+            fragmentListBinding.pbLoadingIndication.getRoot().setVisibility(View.INVISIBLE);
+            fragmentListBinding.rvMoviesList.setVisibility(View.VISIBLE);
+            fragmentListBinding.rvMoviesList.setAdapter(moviesAdapter);
         }
     }
 
@@ -85,9 +94,13 @@ public class MainListFragment extends Fragment implements RetrofitNetworkUtils.o
 
     @Override
     public void onLoadCompletedSuccessfully(List results) {
+       if (pageNumber == 1) {//save the first page in database
+            MovieDatabaseOperations.deletePreviousCollectionData(getActivity(), category, subCategory);
+            MovieDatabaseOperations.insertNewDataCollection(getActivity(), results, category, subCategory);
+        }
+        moviesAdapter = new MainListAdapter((MainActivity)getActivity(), results, getArguments().getString(RetrofitNetworkUtils.LIST_MAIN_CATEGORY));
         fragmentListBinding.pbLoadingIndication.getRoot().setVisibility(View.INVISIBLE);
         fragmentListBinding.rvMoviesList.setVisibility(View.VISIBLE);
-        moviesAdapter=new MainListAdapter(getActivity(),results,getArguments().getString(RetrofitNetworkUtils.LIST_MAIN_CATEGORY));
         fragmentListBinding.rvMoviesList.setAdapter(moviesAdapter);
     }
 

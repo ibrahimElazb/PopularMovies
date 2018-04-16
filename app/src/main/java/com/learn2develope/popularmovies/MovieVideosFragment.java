@@ -1,22 +1,18 @@
 package com.learn2develope.popularmovies;
 
 import android.databinding.DataBindingUtil;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.learn2develope.popularmovies.adapters.MovieReviewsAdapter;
 import com.learn2develope.popularmovies.adapters.MovieVideosAdapter;
 import com.learn2develope.popularmovies.databinding.FragmentMovieVideosBinding;
 import com.learn2develope.popularmovies.model.movies.movieVideos.Result;
-import com.learn2develope.popularmovies.retrofitUtils.RetrofitNetworkUtils;
+import com.learn2develope.popularmovies.NetworkUtils.RetrofitNetworkUtils;
 
 import java.util.List;
 
@@ -29,7 +25,7 @@ public class MovieVideosFragment extends Fragment implements RetrofitNetworkUtil
     public static MovieVideosFragment newInstance(int movieId) {
         MovieVideosFragment fragment = new MovieVideosFragment();
         Bundle args = new Bundle();
-        args.putInt(DetailsActivity.ARG_MOVIE_ID, movieId);
+        args.putInt(MoviesDetailedActivity.ARG_MOVIE_ID, movieId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -38,7 +34,7 @@ public class MovieVideosFragment extends Fragment implements RetrofitNetworkUtil
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mMovieId = getArguments().getInt(DetailsActivity.ARG_MOVIE_ID);
+            mMovieId = getArguments().getInt(MoviesDetailedActivity.ARG_MOVIE_ID);
         }
     }
 
@@ -71,7 +67,7 @@ public class MovieVideosFragment extends Fragment implements RetrofitNetworkUtil
             List<Result> videoList=results;
             movieVideosBinding.loadingIndicator.getRoot().setVisibility(View.INVISIBLE);
             movieVideosBinding.rvMovieVideo.setVisibility(View.VISIBLE);
-            MovieVideosAdapter videosAdapter=new MovieVideosAdapter(getActivity(),videoList);
+            MovieVideosAdapter videosAdapter=new MovieVideosAdapter(videoList);
             movieVideosBinding.rvMovieVideo.setAdapter(videosAdapter);
         }else {
             movieVideosBinding.tvShowError.setText("No Videos for this movie");

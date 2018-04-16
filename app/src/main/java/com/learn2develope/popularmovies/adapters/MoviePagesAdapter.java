@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.learn2develope.popularmovies.MovieCastFragment;
-import com.learn2develope.popularmovies.MovieDetailedFragment;
+import com.learn2develope.popularmovies.MovieInfoDetailsFragment;
 import com.learn2develope.popularmovies.MovieReviewsFragment;
 import com.learn2develope.popularmovies.MovieVideosFragment;
 
@@ -26,7 +26,7 @@ public class MoviePagesAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position==0){
-           return MovieDetailedFragment.newInstance(movieId);
+           return MovieInfoDetailsFragment.newInstance(movieId);
         }
         else if (position==1){
             return MovieCastFragment.newInstance(movieId);

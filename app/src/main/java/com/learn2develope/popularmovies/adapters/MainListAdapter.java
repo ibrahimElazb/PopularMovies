@@ -1,6 +1,5 @@
 package com.learn2develope.popularmovies.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,15 +10,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.learn2develope.popularmovies.MainActivity;
 import com.learn2develope.popularmovies.R;
-import com.learn2develope.popularmovies.retrofitUtils.RetrofitNetworkUtils;
+import com.learn2develope.popularmovies.database.DatabaseModel;
+import com.learn2develope.popularmovies.NetworkUtils.RetrofitNetworkUtils;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -27,14 +24,16 @@ import java.util.List;
  * Created by Ibrahim Elazb on 12/23/2017.
  */
 
+//used for adapting the list of movies,tv shows and actors in the main activity
+
 public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MovieViewHolder> {
 
     List mResultList;
-    Context mContext;
     String mCategory;
+    onListItemClickListener listener;
 
-    public MainListAdapter(Context context, List resultList, String category){
-        mContext=context;
+    public MainListAdapter(onListItemClickListener listener,List resultList, String category){
+        this.listener=listener;
         mResultList=resultList;
         mCategory=category;
     }
@@ -42,103 +41,94 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MovieV
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View listItemView=LayoutInflater
-                .from(mContext).inflate(R.layout.list_item_main,parent,false);
+                .from(parent.getContext()).inflate(R.layout.list_item_main,parent,false);
         return new MovieViewHolder(listItemView);
     }
 
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
-        if(mCategory.equals(RetrofitNetworkUtils.MOVIES_CATEGORY)){
+        if(mCategory.equals(RetrofitNetworkUtils.MOVIES_CATEGORY)){//if you show a list of movies
             bindingMoviesList(holder,position);
-        }else if (mCategory.equals(RetrofitNetworkUtils.TV_CATEGORY)){
+        }else if (mCategory.equals(RetrofitNetworkUtils.TV_CATEGORY)){//if you show a list of tv shows
             bindingTvList(holder,position);
-        }else if(mCategory.equals(RetrofitNetworkUtils.ACTORS_CATEGORY)){
+        }else if(mCategory.equals(RetrofitNetworkUtils.ACTORS_CATEGORY)){//if you show a list of actors(people)
             bindingActorsList(holder,position);
-        }else throw new IllegalArgumentException("invalid argument");
+        }else{//if you are offline and there is no internet connection it reads from database
+            DatabaseModel model=(DatabaseModel)mResultList.get(position);
+            holder.movieTitleTextView.setText(model.getMovieName());
+            holder.itemView.setTag(model.getMovieId());
+            holder.imageLoadingProgressbar.setVisibility(View.INVISIBLE);
+            holder.moviePosterImageView.setImageResource(R.drawable.ic_no_image);
+        }
     }
 
-    public void bindingMoviesList(final MovieViewHolder holder, int position){
-       // Log.d(MainListAdapter.class.getName(),"this is bindingMoviesList type ");
+    public void bindingMoviesList(final MovieViewHolder holder, int position){//if you are showing a list of movies
         com.learn2develope.popularmovies.model.movies.Result movieResult=(com.learn2develope.popularmovies.model.movies.Result)mResultList.get(position);
         String movieTitle=movieResult.title;
         String moviePosterPath=movieResult.posterPath;
        holder.movieTitleTextView.setText(movieTitle);
        String imageUrl="https://image.tmdb.org/t/p/w500/"+moviePosterPath;
         holder.imageLoadingProgressbar.setVisibility(View.VISIBLE);
-        Glide.with(mContext.getApplicationContext()).
-                load(imageUrl).
-                error(R.drawable.ic_no_image).
-                fitCenter().
-                listener(new RequestListener<String, GlideDrawable>() {
+        Picasso.with(holder.listItemView.getContext()).load(imageUrl)
+                .into(holder.moviePosterImageView, new Callback() {
                     @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    public void onSuccess() {
                         holder.imageLoadingProgressbar.setVisibility(View.INVISIBLE);
-                        return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    public void onError() {
                         holder.imageLoadingProgressbar.setVisibility(View.INVISIBLE);
-                        return false;
+                        holder.moviePosterImageView.setImageResource(R.drawable.ic_no_image);
                     }
-                }).
-                into(holder.moviePosterImageView);
+                });
         holder.itemView.setTag(movieResult.id);
     }
 
-    public void bindingTvList(final MovieViewHolder holder, int position){
+    public void bindingTvList(final MovieViewHolder holder, int position){//if you are showing a list of tv shows
         com.learn2develope.popularmovies.model.tv.Result tvResult=(com.learn2develope.popularmovies.model.tv.Result)mResultList.get(position);
         String tvTitle=tvResult.name;
         String tvShowPosterPath=tvResult.posterPath;
         holder.movieTitleTextView.setText(tvTitle);
         String imageUrl="https://image.tmdb.org/t/p/w500/"+tvShowPosterPath;
-        Glide.with(mContext.getApplicationContext()).
-                load(imageUrl).
-                error(R.drawable.ic_no_image).
-                fitCenter().
-                listener(new RequestListener<String, GlideDrawable>() {
+
+        Picasso.with(holder.listItemView.getContext()).load(imageUrl)
+                .into(holder.moviePosterImageView, new Callback() {
                     @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    public void onSuccess() {
                         holder.imageLoadingProgressbar.setVisibility(View.INVISIBLE);
-                        return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    public void onError() {
                         holder.imageLoadingProgressbar.setVisibility(View.INVISIBLE);
-                        return false;
+                        holder.moviePosterImageView.setImageResource(R.drawable.ic_no_image);
                     }
-                }).
-                into(holder.moviePosterImageView);
+                });
         holder.itemView.setTag(tvResult.id);
         holder.imageLoadingProgressbar.setVisibility(View.INVISIBLE);
         holder.moviePosterImageView.setVisibility(View.VISIBLE);
     }
 
-    public void bindingActorsList(final MovieViewHolder holder, int position){
+    public void bindingActorsList(final MovieViewHolder holder, int position){//if you are showing a list of actors(people)
         com.learn2develope.popularmovies.model.actors.Result actorResult=(com.learn2develope.popularmovies.model.actors.Result)mResultList.get(position);
         String actorName=actorResult.name;
         String actorProfilePath=actorResult.profilePath;
         holder.movieTitleTextView.setText(actorName);
         String imageUrl="https://image.tmdb.org/t/p/w500/"+actorProfilePath;
-        Glide.with(mContext.getApplicationContext()).
-                load(imageUrl).
-                error(R.drawable.ic_no_image).
-                fitCenter().
-                listener(new RequestListener<String, GlideDrawable>() {
+        Picasso.with(holder.listItemView.getContext()).load(imageUrl)
+                .into(holder.moviePosterImageView, new Callback() {
                     @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    public void onSuccess() {
                         holder.imageLoadingProgressbar.setVisibility(View.INVISIBLE);
-                        return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    public void onError() {
                         holder.imageLoadingProgressbar.setVisibility(View.INVISIBLE);
-                        return false;
+                        holder.moviePosterImageView.setImageResource(R.drawable.ic_no_image);
                     }
-                }).
-                into(holder.moviePosterImageView);
+                });
         holder.itemView.setTag(actorResult.id);
         holder.imageLoadingProgressbar.setVisibility(View.INVISIBLE);
         holder.moviePosterImageView.setVisibility(View.VISIBLE);
@@ -155,55 +145,60 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MovieV
         TextView movieTitleTextView;
         ProgressBar imageLoadingProgressbar;
         ImageButton popUpMenuImageButton;
+        View listItemView;
         public MovieViewHolder(View listItemView){
             super(listItemView);
             moviePosterImageView=(ImageView)listItemView.findViewById(R.id.iv_movie_poster);
             movieTitleTextView=(TextView)listItemView.findViewById(R.id.tv_movie_title);
             imageLoadingProgressbar=(ProgressBar)listItemView.findViewById(R.id.pb_image_loading);
             popUpMenuImageButton=(ImageButton)listItemView.findViewById(R.id.ib_popup_menu);
+            this.listItemView=listItemView;
+
             popUpMenuImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    showMenu(view);
+                public void onClick(View view) {//when you ckick the popUp menu (to show a specific type of information)
+                    showPopUpMenu(view);
                 }
             });
+
             listItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    ((onListItemClickListener)MainListAdapter.this.mContext)
-                            .onClickListener(Integer.parseInt(itemView.getTag().toString()), MainActivity.SHOW_ALL_INFORMATION);
+                public void onClick(View view) {//when you clisk directly on a list item (to show all information)
+                            listener.onClickListener(Integer.parseInt(itemView.getTag().toString()), MainActivity.SHOW_ALL_INFORMATION);
                 }
             });
 
         }
 
-        public void showMenu(View view) {
-            PopupMenu popupMenu=new PopupMenu(mContext,view);
+        public void showPopUpMenu(View view) {
+            PopupMenu popupMenu=new PopupMenu(view.getContext(),view);
 
+            //each category (movie, tv show , actor) has its popUp menu
             if (mCategory.equals(RetrofitNetworkUtils.MOVIES_CATEGORY))
                 popupMenu.inflate(R.menu.movie_pop_up_menu);
             else if (mCategory.equals(RetrofitNetworkUtils.TV_CATEGORY))
                 popupMenu.inflate(R.menu.tv_pop_up_menu);
             else if (mCategory.equals(RetrofitNetworkUtils.ACTORS_CATEGORY))
                 popupMenu.inflate(R.menu.actors_pop_up_menu);
+
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    switch (item.getItemId()){
+                    switch (item.getItemId()){//what type of a specific information you want to show
                         case R.id.show_details_menu_item:
-                            ((onListItemClickListener)MainListAdapter.this.mContext).onClickListener(Integer.parseInt(itemView.getTag().toString()), MainActivity.SHOW_DETAILS);
+                            listener.onClickListener(Integer.parseInt(itemView.getTag().toString()), MainActivity.SHOW_DETAILS);
                             break;
                         case R.id.show_reviews_menu_item:
-                            ((onListItemClickListener)MainListAdapter.this.mContext).onClickListener(Integer.parseInt(itemView.getTag().toString()),MainActivity.SHOW_REVIEWS);
+                            listener.onClickListener(Integer.parseInt(itemView.getTag().toString()),MainActivity.SHOW_REVIEWS);
                             break;
                         case R.id.show_cast_menu_item:
-                            ((onListItemClickListener)MainListAdapter.this.mContext).onClickListener(Integer.parseInt(itemView.getTag().toString()),MainActivity.SHOW_CAST);
+                            listener.onClickListener(Integer.parseInt(itemView.getTag().toString()),MainActivity.SHOW_CAST);
                             break;
                         case R.id.show_videos_menu_item:
-                            ((onListItemClickListener)MainListAdapter.this.mContext).onClickListener(Integer.parseInt(itemView.getTag().toString()),MainActivity.SHOW_VIDEOS);
+                            listener.onClickListener(Integer.parseInt(itemView.getTag().toString()),MainActivity.SHOW_VIDEOS);
                             break;
                         case R.id.show_works_menu_item:
-                            Toast.makeText(mContext,"show works "+getAdapterPosition(),Toast.LENGTH_SHORT).show();
+                            listener.onClickListener(Integer.parseInt(itemView.getTag().toString()),MainActivity.SHOW_WORKS);
                             break;
                     }
                     return true;
